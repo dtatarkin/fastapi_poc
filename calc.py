@@ -1,7 +1,7 @@
-from decimal import Decimal, localcontext, ROUND_CEILING, ROUND_HALF_EVEN
+from decimal import ROUND_CEILING, ROUND_HALF_EVEN, Decimal, localcontext
 
-from consts import State, DISCOUNT_PERCENT, TAX
-from models import Order, Invoice
+from consts import DISCOUNT_PERCENT, TAX, State
+from models import Invoice, Order
 
 
 def calc_discount_percent(amount: Decimal) -> Decimal:
@@ -14,6 +14,11 @@ def calc_discount_percent(amount: Decimal) -> Decimal:
 
 
 def round_discount(amount: Decimal) -> Decimal:
+    """
+    Rounding discount amount to cents (in favor of the buyer)
+    :param amount: raw discount in fractions of dollars
+    :return: rounded discount
+    """
     with localcontext() as context:
         context.rounding = ROUND_CEILING
         return amount.quantize(Decimal('0.00'))
@@ -24,6 +29,11 @@ def calc_discount(amount: Decimal) -> Decimal:
 
 
 def round_tax(amount: Decimal) -> Decimal:
+    """
+    Rounding discount amount to cents (using "banker's rounding")
+    :param amount: raw value in fractions of dollars
+    :return: rounded tax amount
+    """
     with localcontext() as context:
         context.rounding = ROUND_HALF_EVEN
         return amount.quantize(Decimal('0.00'))
@@ -34,6 +44,11 @@ def calc_tax(amount: Decimal, state: State) -> Decimal:
 
 
 def get_invoice(order: Order) -> Invoice:
+    """
+    Generate Invoice object from provided Order
+    :param order: Order object
+    :return: Invoice object
+    """
     subtotal = order.quantity * order.price
     discount = calc_discount(subtotal)
     amount_after_discount = subtotal - discount

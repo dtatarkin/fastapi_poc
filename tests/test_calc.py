@@ -2,9 +2,9 @@ from decimal import Decimal
 
 import pytest
 
-from calc import calc_discount, calc_discount_percent, calc_tax, round_discount, round_tax, get_invoice
-from consts import State, TAX
-from models import Order, Invoice
+from calc import calc_discount, calc_discount_percent, calc_tax, get_invoice, round_discount, round_tax
+from consts import TAX, State
+from models import Invoice, Order
 
 
 @pytest.mark.parametrize('amount, expected', (
